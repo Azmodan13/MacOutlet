@@ -1,6 +1,11 @@
+function create(name) {
+    return document.createElement(name)
+}
+
 const colMain = document.querySelector('.col-main');
 const main = document.querySelector('.main');
 
+//* Create product items
 function createProduct(id, imgUrl, Name, inStock, price, reviews) {
     const item = create('div');
     item.className = 'items';
@@ -95,41 +100,62 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews) {
 
 
 
-//* Sort
 
-for (const el of items) {
-    // if (el.color == "Black") {
-    createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
-    // }
-}
 
-//* Filter
+
+//* create search
+
+const input = document.querySelector('.input__text');
+const searchContent = document.querySelector('.search-content')
+
+for (const el of items) {createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)}
+
+input.addEventListener('keyup', function () {
+    const item = document.querySelectorAll('.items')
+    searchContent.querySelectorAll('.search-item').forEach(e => e.remove());
+    item.forEach(e => e.remove());
+
+
+    for (const el of items) {
+        if (el.name.toLowerCase().startsWith(input.value.toLowerCase()) === true && input.value !== '') {
+            searchContent.classList.add('search-active')
+            let li = create('li')
+            li.className = 'search-item'
+            li.innerText = el.name
+            searchContent.append(li)
+            createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+        }
+
+        if (input.value == '') {
+            createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+            searchContent.classList.remove('search-active')
+        }
+    }
+})
+
+searchContent.addEventListener('click', event => {
+    input.value = event.target.innerText
+    searchContent.classList.remove('search-active')
+    document.querySelectorAll('.items').forEach(e => e.remove());
+    for (const el of items) {
+        if (el.name == input.value) {
+            createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+        }
+    }
+})
+document.body.addEventListener('click', () => {searchContent.classList.remove('search-active')})
+
+
+//* Filter bar
 
 const filterTitle = document.getElementsByClassName('filter-title')
 
 Array.from(filterTitle, el => el.addEventListener('click', function () {
-    console.log(el)
     this.querySelector('.filter-icon').classList.toggle('filter-icon-active')
     this.nextElementSibling.classList.toggle('active')
     this.parentNode.classList.toggle('filter-card-active')
 }))
 
-//* modal, opan, close
-const backgroundModal = document.querySelector('.backgroundModal')
-const item = document.getElementsByClassName('items')
-Array.from(item, el => el.addEventListener('click', function () {
-    const id = this.getAttribute('item-id');
-    for (const i of items) {
-        if (i.id == id) {
-            createModal(i.imgUrl, i.name, i.orderInfo.reviews, i.color, i.os, i.size.height, i.size.weight, i.size.depth, i.size.weight, i.chip.name, i.orderInfo.inStock, i.price)
-        }
-    }
-    console.log(backgroundModal)
-    backgroundModal.classList.add('open')
-}))
-backgroundModal.addEventListener('click', function () {
-    backgroundModal.classList.remove('open')
-})
 
 
 //* create modal
@@ -152,12 +178,27 @@ function createModal(imgUrl, name, reviews, color, operating, height, width, dep
     modalPrice[0].innerText = `$ ${price}`
 }
 
+//* modal, opan, close
 
-// const like = document.getElementsByClassName('like')
-// Array.from(like, el => el.addEventListener('click', function () {
-//     this.src = '/img/icons/like_filled.svg';
-// }))
+document.querySelector('.col-main').addEventListener('click', event => {
+    let id
+    if (event.target.className === 'items' || event.target.className === 'product_img') {
+        id = event.target.getAttribute('item-id')
 
-function create(name) {
-    return document.createElement(name)
-}
+        if (id === null) {
+            id = event.target.parentNode.getAttribute('item-id')
+        }
+        for (const i of items) {
+            if (i.id == id) {
+                createModal(i.imgUrl, i.name, i.orderInfo.reviews, i.color, i.os, i.size.height, i.size.weight, i.size.depth, i.size.weight, i.chip.name, i.orderInfo.inStock, i.price)
+            }
+        }
+        document.querySelector('.backgroundModal').classList.add('open')
+    }
+})
+document.querySelector('.backgroundModal').addEventListener('click', el => {
+    el.target.classList.remove('open')
+})
+
+
+
