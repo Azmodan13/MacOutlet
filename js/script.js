@@ -6,7 +6,8 @@ const colMain = document.querySelector('.col-main');
 const main = document.querySelector('.main');
 
 //* Create product items
-function createProduct(id, imgUrl, Name, inStock, price, reviews) {
+function createProduct(id, imgUrl, Name, inStock, price, reviews, orders) {
+
     const item = create('div');
     item.className = 'items';
     item.setAttribute('item-id', id);
@@ -65,7 +66,7 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews) {
 
     const reviewsSum = create('div');
     reviewsSum.className = 'reviews__sum';
-    reviewsSum.innerText = ``
+    reviewsSum.innerText = orders;
 
     const span = create('span');
     span.innerText = reviews;
@@ -108,7 +109,7 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews) {
 const input = document.querySelector('.input__text');
 const searchContent = document.querySelector('.search-content')
 
-for (const el of items) {createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)}
+
 
 input.addEventListener('keyup', function () {
     const item = document.querySelectorAll('.items')
@@ -143,7 +144,9 @@ searchContent.addEventListener('click', event => {
         }
     }
 })
-document.body.addEventListener('click', () => {searchContent.classList.remove('search-active')})
+document.body.addEventListener('click', () => {
+    searchContent.classList.remove('search-active')
+})
 
 
 //* Filter bar
@@ -202,3 +205,48 @@ document.querySelector('.backgroundModal').addEventListener('click', el => {
 
 
 
+//* filter
+
+const filters = document.querySelector('#filters');
+filters.addEventListener('input', AsideFilter);
+
+function AsideFilter() {
+    const priceMin = document.querySelector('#price-min').value;
+    const priceMax = document.querySelector('#price-max').value;
+
+    const color = [...filters.querySelectorAll('.checkbox input:checked')].map((n) => n.value);
+    const memory = [...filters.querySelectorAll('#memory input:checked')].map((n) => Number(n.value));
+
+    document.querySelectorAll('.items').forEach(e => e.remove());
+console.log(color)
+    for (el of items) {
+
+        for (i of color) {
+            if (
+                (!priceMin || priceMin <= el.price) &&
+                (!priceMax || priceMax >= el.price) &&
+                (!color.length  || el.color.includes(i)) &&
+                // (!color.length ||  el.os.includes(i)) &&
+                (!memory.length || memory.includes(el.storage))
+
+            ) {
+
+                createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+            } 
+        } 
+        if(priceMin == "" &&  priceMax == '' & color == '' && memory == '') {
+            createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+
+        }
+    }
+}
+
+
+
+
+
+
+for(el of items){
+                    createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews)
+
+}
