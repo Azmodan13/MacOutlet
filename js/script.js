@@ -129,7 +129,8 @@ input.addEventListener("keyup", function () {
         el.name,
         el.orderInfo.inStock,
         el.price,
-        el.orderInfo.reviews
+        el.orderInfo.reviews,
+        el.orderInfo.orders
       );
     }
 
@@ -140,7 +141,8 @@ input.addEventListener("keyup", function () {
         el.name,
         el.orderInfo.inStock,
         el.price,
-        el.orderInfo.reviews
+        el.orderInfo.reviews,
+        el.orderInfo.orders
       );
       searchContent.classList.remove("search-active");
     }
@@ -159,7 +161,8 @@ searchContent.addEventListener("click", (event) => {
         el.name,
         el.orderInfo.inStock,
         el.price,
-        el.orderInfo.reviews
+        el.orderInfo.reviews,
+        el.orderInfo.orders
       );
     }
   }
@@ -268,14 +271,14 @@ function AsideFilter() {
 
   // * Фильтр цены
 
-  const filteredItemsWithPrice = 
-  priceFromFiltersWrapper.length > 0 && priceToFiltersWrapper.length > 0 ?
-  items.filter((el) => {
-    if (el.price > Number(priceFromFiltersWrapper) && el.price < Number(priceToFiltersWrapper)) {
-      return true
-    }
-      
-  }) : items
+  const filteredItemsWithPrice =
+    priceFromFiltersWrapper.length > 0 && priceToFiltersWrapper.length > 0 ?
+    items.filter((el) => {
+      if (el.price > Number(priceFromFiltersWrapper) && el.price < Number(priceToFiltersWrapper)) {
+        return true
+      }
+
+    }) : items
 
 
 
@@ -370,14 +373,6 @@ function AsideFilter() {
     }) : filtredItemsAfterOs
 
 
-
-
-
-
-
-
-
-
   for (item of filtredItemsAfterDisplay) {
     createProduct(
       item.id,
@@ -385,18 +380,11 @@ function AsideFilter() {
       item.name,
       item.orderInfo.inStock,
       item.price,
-      item.orderInfo.reviews
+      item.orderInfo.reviews,
+      el.orderInfo.orders
     );
   }
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -407,6 +395,174 @@ for (el of items) {
     el.name,
     el.orderInfo.inStock,
     el.price,
-    el.orderInfo.reviews
+    el.orderInfo.reviews,
+    el.orderInfo.orders
   );
 }
+
+document.querySelector('.serch__seting').addEventListener('click', (event) => {
+  document.querySelector('.serch__seting').classList.toggle('serch__seting-active')
+  document.querySelector('.order-search').classList.toggle('search-active')
+})
+
+//* Сортировка по цене
+
+document.querySelector('.search__filter').addEventListener('click', () => {
+  document.querySelector('.search__filter').classList.toggle('serch__seting-active')
+  document.querySelector('.broad-search').classList.toggle('search-active')
+})
+
+document.querySelector('.order-search').addEventListener('click', (event) => {
+  if (event.target.id === 'ascending') {
+    document.querySelector('.order-search-items-active').classList.remove('order-search-items-active')
+    event.target.classList.add('order-search-items-active')
+    let temp = []
+    sortByPriceAscending(temp)
+    colMain.innerHTML = null;
+    for (el of temp) {
+      createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+    }
+  }
+  if (event.target.id === 'descending') {
+    document.querySelector('.order-search-items-active').classList.remove('order-search-items-active')
+    event.target.classList.add('order-search-items-active')
+    let temp = []
+    sortByPriceDescending(temp)
+    colMain.innerHTML = null;
+    for (el of temp) {
+      createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+    }
+  }
+  if (event.target.id === 'default') {
+    document.querySelector('.order-search-items-active').classList.remove('order-search-items-active')
+    event.target.classList.add('order-search-items-active')
+    let temp = []
+    sortByPriceDefault(temp)
+    colMain.innerHTML = null;
+    for (el of temp) {
+      createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+    }
+  }
+})
+
+
+
+function sortByPriceAscending(temp) {
+  document.querySelectorAll('.items').forEach((el) => {
+    for (i of items) {
+      if (el.getAttribute("item-id") == i.id) {
+        temp.push(i)
+      }
+    }
+    temp.sort((a, b) => a.price > b.price ? 1 : -1)
+    return temp
+  })
+}
+
+
+function sortByPriceDescending(temp) {
+  document.querySelectorAll('.items').forEach((el) => {
+    for (i of items) {
+      if (el.getAttribute("item-id") == i.id) {
+        temp.push(i)
+      }
+    }
+    temp.sort((a, b) => a.price < b.price ? 1 : -1)
+    return temp
+  })
+}
+
+function sortByPriceDefault(temp) {
+  document.querySelectorAll('.items').forEach((el) => {
+    for (i of items) {
+      if (el.getAttribute("item-id") == i.id) {
+        temp.push(i)
+      }
+    }
+    temp.sort((a, b) => a.id > b.id ? 1 : -1)
+    return temp
+  })
+}
+
+
+
+
+
+
+
+
+
+
+//* Реализация сортировки по категориям
+document.querySelector('.broad-search').addEventListener('click', (event) => {
+  if (event.target.className === 'broad-search-btn') {
+    const category = document.getElementById('category').value
+    const stock = document.getElementById('stock').value
+
+
+    if (category !== 'All categories' && stock == 'In stock') {
+      colMain.innerHTML = null;
+      for (el of items) {
+        if (el.category == category && el.orderInfo.inStock > 0) {
+          createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+        }
+      }
+    }
+    if (category === 'All categories' && stock == 'In stock') {
+      colMain.innerHTML = null;
+      for (el of items) {
+        if (el.orderInfo.inStock > 0) {
+          createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+        }
+      }
+    }
+    if (category === 'All categories' && stock !== 'In stock') {
+      colMain.innerHTML = null;
+      for (el of items) {
+        createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+      }
+    }
+
+    if (category !== 'All categories' && stock === 'Any') {
+      colMain.innerHTML = null;
+      for (el of items) {
+        if (el.category == category) {
+          createProduct(el.id, el.imgUrl, el.name, el.orderInfo.inStock, el.price, el.orderInfo.reviews, el.orderInfo.orders);
+        }
+      }
+    }
+  }
+})
+
+
+//* карусель / товар с карусели
+
+
+// ?  Товар
+document.querySelector('.carusel-wrapper').addEventListener('click', (event) => {
+  if (event.target.className === 'btn') {
+    console.log(event.target.getAttribute("item-id"))
+
+    let key = event.target.getAttribute("item-id")
+    let count = 1
+    localStorage.setItem(key, count)
+    for (let i = 0; i < localStorage.length; i++) {
+      for (el of items) {
+        if (localStorage.key(i) == el.id) {
+          createBasketProdukt(el.imgUrl, el.name, el.price)
+        }
+      }
+    }
+    itemsInTheCart()
+  }
+})
+
+// ? карусель
+
+function randomInteger() {
+  let rand = 1 + Math.random() * (8 + 1 - 1);
+  return Math.floor(rand);
+}
+const random = randomInteger()
+console.log(random)
+document.getElementById(random).classList.add('carusel-active')
