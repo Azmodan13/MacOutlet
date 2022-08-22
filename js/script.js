@@ -804,3 +804,4 @@ function itemsInTheCart() {
     document.querySelector('#total-amount').innerHTML = count,
     document.querySelector('#total-price').innerHTML = `${sum} $`
 }
+//
