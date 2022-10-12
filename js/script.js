@@ -14,12 +14,12 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews, orders) {
 
   const like = create("img");
   like.className = "like";
-  like.src = "/img/icons/like_empty.svg";
+  like.src = "./img/icons/like_empty.svg";
   like.alt = "like";
 
   const productImg = create("img");
   productImg.className = "product_img";
-  productImg.src = `/img/${imgUrl}`;
+  productImg.src = `./img/${imgUrl}`;
 
   const productName = create("div");
   productName.className = "product_name";
@@ -31,9 +31,9 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews, orders) {
   const check = create("img");
   check.className = "check";
   if (inStock <= 0) {
-    check.src = "/img/icons/close.svg";
+    check.src = "./img/icons/close.svg";
   } else {
-    check.src = "/img/icons/check.svg";
+    check.src = "./img/icons/check.svg";
   }
 
   const left = create("span");
@@ -56,7 +56,7 @@ function createProduct(id, imgUrl, Name, inStock, price, reviews, orders) {
 
   const reviewsLike = create("img");
   reviewsLike.className = "reviews__like";
-  reviewsLike.src = "/img/icons/like_filled.svg";
+  reviewsLike.src = "./img/icons/like_filled.svg";
 
   const reviewsHolder = create("div");
   reviewsHolder.className = "reviews_holder";
@@ -201,7 +201,7 @@ function createModal(
   id
 ) {
   const picture = document.getElementsByClassName("modal__img-picture");
-  picture[0].src = `/img/${imgUrl}`;
+  picture[0].src = `./img/${imgUrl}`;
   const productName = document.getElementsByClassName("modal__name");
   productName[0].innerText = name;
   const positiveReviews = document.getElementsByClassName("positive");
@@ -726,7 +726,7 @@ function createBasketProdukt(el, count) {
   basketCartWrapperImg.className = 'baske-cart-wrapper-img';
   const basketCartImg = create('img');
   basketCartImg.className = 'baske-cart-img';
-  basketCartImg.src = `/img/${el.imgUrl}`;
+  basketCartImg.src = `./img/${el.imgUrl}`;
   const basketCartDescr = create('div');
   basketCartDescr.className = 'baske-cart-descr';
 
